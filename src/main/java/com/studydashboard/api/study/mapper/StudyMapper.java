@@ -1,9 +1,11 @@
 package com.studydashboard.api.study.mapper;
 
 import com.studydashboard.api.study.dto.StudyResponseDto;
+import com.studydashboard.api.study.dto.response.StudyInviteResponseDto;
 import com.studydashboard.api.study.dto.response.StudyPlanResponseDto;
 import com.studydashboard.api.study.dto.response.StudyUserResponseDto;
 import com.studydashboard.api.study.entity.Study;
+import com.studydashboard.api.study.entity.StudyInvite;
 import com.studydashboard.api.study.entity.StudyPlan;
 import com.studydashboard.api.study.entity.StudyUser;
 
@@ -33,6 +35,16 @@ public class StudyMapper {
                 .startDate(studyPlane.getStartDate())
                 .endDate(studyPlane.getEndDate())
                 .status(studyPlane.getStatus())
+                .build();
+    }
+    public static StudyInviteResponseDto toDto(final StudyInvite studyInvite){
+        return StudyInviteResponseDto.builder()
+                .studyName(studyInvite.getStudy().getTitle())
+                .id(studyInvite.getId())
+                .inviterId(studyInvite.getInviter().getId())
+                .inviterName(studyInvite.getInviter().getName())
+                .isAccepted(studyInvite.getIsAccepted())
+                .studyId(studyInvite.getStudy().getId())
                 .build();
     }
 }

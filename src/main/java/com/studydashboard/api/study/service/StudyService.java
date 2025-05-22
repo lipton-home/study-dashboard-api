@@ -6,12 +6,15 @@ import com.studydashboard.api.redis.type.TopicType;
 import com.studydashboard.api.study.data.StudyUserId;
 import com.studydashboard.api.study.dto.StudyResponseDto;
 import com.studydashboard.api.study.dto.request.*;
+import com.studydashboard.api.study.dto.response.StudyInviteResponseDto;
 import com.studydashboard.api.study.dto.response.StudyPlanResponseDto;
 import com.studydashboard.api.study.dto.response.StudyUserResponseDto;
 import com.studydashboard.api.study.entity.Study;
+import com.studydashboard.api.study.entity.StudyInvite;
 import com.studydashboard.api.study.entity.StudyPlan;
 import com.studydashboard.api.study.entity.StudyUser;
 import com.studydashboard.api.study.mapper.StudyMapper;
+import com.studydashboard.api.study.repository.StudyInviteRepository;
 import com.studydashboard.api.study.repository.StudyPlanRepository;
 import com.studydashboard.api.study.repository.StudyRepository;
 import com.studydashboard.api.study.repository.StudyUserRepository;
@@ -36,14 +39,27 @@ public class StudyService {
     private final StudyRepository studyRepository;
     private final StudyUserRepository studyUserRepository;
     private final StudyPlanRepository studyPlanRepository;
+    private final StudyInviteRepository studyInviteRepository;
     private final UserService userService;
     private final RedisPublisher redisPublisher;
 
     @Transactional
-    public List<StudyUserResponseDto> findInvites(){
+    public List<StudyInviteResponseDto> findInvites(){
         User user = SecurityUtil.getCurrentUser();
-        List<StudyUser> studyUsers = studyUserRepository.findStudyUsersByUserAndStatus(user, StudyUserStatus.PENDING);
-        return studyUsers.stream().map(StudyMapper::toDto).toList();
+        List<StudyInvite> unreadInvites = studyInviteRepository.findAllByInviteeAndIsAccepted(user, false);
+        List<StudyInviteResponseDto> studyInvites = unreadInvites
+                .stream()
+                .map(StudyMapper::toDto)
+                .toList();
+        unreadInvites.forEach(studyInvite -> studyInvite.setIsRead(true));
+        studyInviteRepository.saveAll(unreadInvites);
+        return studyInvites;
+    }
+
+    @Transactional
+    public Long countNewInvites() {
+        User user = SecurityUtil.getCurrentUser();
+        return studyInviteRepository.countStudyInvitesByInviteeAndIsRead(user, false);
     }
 
     @Transactional

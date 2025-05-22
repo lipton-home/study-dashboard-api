@@ -3,6 +3,7 @@ package com.studydashboard.api.study.controller;
 import com.studydashboard.api.auth.dto.UpdateStudyPlanStatusDto;
 import com.studydashboard.api.study.dto.StudyResponseDto;
 import com.studydashboard.api.study.dto.request.*;
+import com.studydashboard.api.study.dto.response.StudyInviteResponseDto;
 import com.studydashboard.api.study.dto.response.StudyPlanResponseDto;
 import com.studydashboard.api.study.dto.response.StudyUserResponseDto;
 import com.studydashboard.api.study.service.StudyService;
@@ -24,10 +25,13 @@ public class StudyController {
     private final StudyService studyService;
 
     @GetMapping("invites")
-    public ResponseEntity<List<StudyUserResponseDto>> findInvites(){
+    public ResponseEntity<List<StudyInviteResponseDto>> findInvites(){
         return ResponseEntity.ok(studyService.findInvites());
     }
-
+    @GetMapping("invites/new")
+    public ResponseEntity<Long> countNewInvites() {
+        return ResponseEntity.ok(studyService.countNewInvites());
+    }
     @PostMapping
     public ResponseEntity<StudyResponseDto> create(@RequestBody final CreateStudyRequestDto dto) {
         return ResponseEntity.ok(studyService.create(dto));

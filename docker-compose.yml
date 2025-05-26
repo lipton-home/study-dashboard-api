@@ -16,14 +16,14 @@ services:
     networks:
       - backend
 
-  redis:
-    image: redis:7
-    container_name: redis
-    restart: always
-    ports:
-      - "6379:6379"
-    networks:
-      - backend
+#  redis:
+#    image: redis:7
+#    container_name: redis
+#    restart: always
+#    ports:
+#      - "6379:6379"
+#    networks:
+#      - backend
 
   mongodb:
     image: mongo:6

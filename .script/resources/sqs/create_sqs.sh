@@ -1,9 +1,21 @@
-#!/bin/bash
+#!/bin/zsh
+
+print_help() {
+  echo "require params"
+  echo "./create_sqs.sh <SQS_NAME>"
+}
 
 SQS_NAME=$1
 
-awslocal --profile localstack create-queue --queue-name "$SQS_NAME"
+if [ -z "$SQS_NAME" ]; then
+  print_help
+  exit 1
+fi
 
-QUEUE_URL=$(awslocal --profile localstack sqs get-queue-url --queue-name "$SQS_NAME" --query "QueueUrl" --output text)
+awslocal create-queue --queue-name "$SQS_NAME"
+
+QUEUE_URL=$(awslocal sqs get-queue-url --queue-name "$SQS_NAME" --query "QueueUrl" --output text)
 
 echo "$QUEUE_URL"
+
+exit 0

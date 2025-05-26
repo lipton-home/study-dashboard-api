@@ -1,10 +1,16 @@
-#!/bin/bash
+#!/bin/zsh
 
-echo 'localstack d'
+echo 'install localstack'
 
-brew install localstack -y
+brew install localstack
 
-# shellcheck source=$HOME/.zshrc
+echo 'install awscli-local'
+
+brew install pipx
+pipx install awscli-local
+pipx ensurepath
+
 source "$HOME/.zshrc"
-source "$HOME/.bashrc"
+#source "$HOME/.bashrc"
 
+exit 0
